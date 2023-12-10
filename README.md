@@ -36,6 +36,7 @@
 
 1. clone the `repo`.
 2. Place `.env` in root of folder.
+3. Run `docker commands`.
 
 ### Execute API using Docker
 
