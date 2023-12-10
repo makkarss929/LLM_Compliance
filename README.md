@@ -22,8 +22,13 @@
 {
     "home_page": [],
     "terms_of_use": [],
-    "cardholder_agreement:": [],
+    "cardholder_agreement:": [
+        "BusinessCard Purpose. TheCard is to be used for business purpose point-of-sale, debit card and AutomatedTeller Machine (ATM) transactions only. The Card may not be used for personal purposes. You acknowledge and understand that the Card shall not be treated asa consumer card under the provisions of state and federal law.",
+        "ProhibitedEntity Type or Account Activity[1] \n\nAny violation of the terms listed inthis agreement, access or use the Services for any illegal purpose or violateany law, statute, ordinance, or regulation; provide false, inaccurate ormisleading information may lead to suspension and/or closure of your Guava Bankaccount and debit card.",
+        "AdditionalRisk Associated with Use of Business Purpose Cards. Youwill not have the benefit of any consumer law limiting liability with respectto the unauthorized use of your Card."
+    ],
     "privacy_policy": [],
+    "disclosures": []
 }
 ```
 
