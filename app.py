@@ -34,6 +34,7 @@ def hello():
 
 @app.post("/non_compliance")
 def handler(body: LLMComplianceSchema, request: Request):
+    body.compliance_rules = obj.text_extraction(body.compliance_rules)
     results = obj.pipeline(body.pages, body.compliance_rules)
     return results
 

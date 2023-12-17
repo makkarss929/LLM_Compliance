@@ -23,8 +23,8 @@ def get_completion_from_messages(messages,
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=temperature
-        )
+        temperature=temperature, 
+    )
     return response.choices[0].message["content"]
 
 
@@ -62,7 +62,6 @@ class LLMCompliance:
     def __init__(self) -> None:
         pass
     
-
     def non_complaince(self, key, text, compliance_rules):
         delimiter = "####"
         system_message = f"""
@@ -88,26 +87,69 @@ class LLMCompliance:
         'content': f"{delimiter}{user_message_1}{delimiter}"},  
         ] 
         response = get_completion_from_messages(messages)
-        return eval(response)['non_compliance_rules']
+        return eval(response)
+
+    def non_complaince_v2(self, key, text, compliance_rules):
+        delimiter = "####"
+        system_message = f"""
+        You will be provided with customer service queries. \
+        The customer service query will be delimited with \
+        {delimiter} characters.
+        Output a python list of objects, where each object has \
+        the following format:
+
+            'non_compliance_rules': <a list of non-compliance sentences that must \
+            be found in the COMPLIANCE RULES below>
+
+        COMPLIANCE RULES:
+        {compliance_rules}
+        """
+
+        user_message_1 = f"""Check {key} agreement against compliance rules and return list of non-compliance sentences.
+        {key} agreement: ```{text}```
+        """
+        messages =  [  
+        {'role':'system', 
+        'content': system_message},    
+        {'role':'user', 
+        'content': f"{delimiter}{user_message_1}{delimiter}"},  
+        ] 
+        response = get_completion_from_messages(messages)
+        return eval(response)
     
+
+    
+    def text_extraction(self, url):
+        try:
+            if url.endswith(".pdf"):
+                # accepting pdf
+                text = WebScraper().pdf(url)
+            elif url.startswith("http"):
+                # accespting urls
+                text = WebScraper().page(url)
+            else:
+                # accepting text
+                text = url
+        except:
+            text = ''
+
+        return text
     
     def pipeline(self, pages, compliance_rules):
 
         context = dict()
 
         for key, url in pages.items():
-            try:
-                if url.endswith(".pdf"):
-                    text = WebScraper().pdf(url)
-                else:
-                    text = WebScraper().page(url)
-            except:
-                text = ''
-            context[key] = text
+            context[key] = self.text_extraction(url)
+
 
         results = dict()
         for key, text in context.items():
-            results[key] = self.non_complaince(key, text, compliance_rules)
+            try:
+                results[key] = self.non_complaince_v2(key, text, compliance_rules)
+            except Exception as e:
+                print(e)
+                results[key] = list()
             time.sleep(20) # Adding sleep to avoid rate limting issues (3 requests per min)
 
         return results
